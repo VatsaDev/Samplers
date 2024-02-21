@@ -303,7 +303,7 @@ class GPT(nn.Module):
         return mfu
 
     @torch.no_grad()
-    def generate(self, idx, max_new_tokens, temperature=1.0, top_k=None):
+    def generate(self, idx, max_new_tokens, temperature=1.0, top_k=None top_p=None, mode="top_p"):
         """
         Take a conditioning sequence of indices idx (LongTensor of shape (b,t)) and complete
         the sequence max_new_tokens times, feeding the predictions back into the model each time.
@@ -319,16 +319,20 @@ class GPT(nn.Module):
             # pluck the logits at the final step and scale by desired temperature
             logits = logits[:, -1, :] / temperature
             print(logits)
-            # optionally crop the logits to only the top k options
-            if top_k is not None:
-                v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
-                logits[logits < v[:, [-1]]] = -float('Inf')
-            # apply softmax to convert logits to (normalized) probabilities
-            probs = F.softmax(logits, dim=-1)
-            print(probs)
-            # sample from the distribution
-            idx_next = torch.multinomial(probs, num_samples=1)
-            # append sampled index to the running sequence and continue
-            idx = torch.cat((idx, idx_next), dim=1)
+
+            # pick between topk and topp
+
+            if mode=="top_p":
+                if top_p is not None:
+                    pass # add top_p here
+            if mode=="top_k"
+                if top_k is not None: # cropping to top l
+                    v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
+                    print("v",v)
+                    logits[logits < v[:, [-1]]] = -float('Inf')
+            
+            probs = F.softmax(logits, dim=-1)  # apply softmax to convert logits to (normalized) probabilities
+            idx_next = torch.multinomial(probs, num_samples=1) # sample from the distribution
+            idx = torch.cat((idx, idx_next), dim=1) # append sampled index to the running sequence and continue
 
         return idx
