@@ -327,7 +327,7 @@ class GPT(nn.Module):
                     torch.sort(logits, descending=True, stable=False, out=None)
                     sum = 0
                     for i in range(len(logits)):
-                        if sum >= top_p:
+                        if sum < top_p:
                             sum+=logits[i]
                         else:
                             sel = i+1
