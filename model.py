@@ -324,7 +324,7 @@ class GPT(nn.Module):
 
             if mode=="top_p":
                 if top_p is not None:
-                    torch.sort(logits, dim=-1, descending=True, stable=False, *, out=None)
+                    torch.sort(logits, descending=True, stable=False, out=None)
                     sum = 0
                     for i in range(len(logits)):
                         if top_p <= sum:
