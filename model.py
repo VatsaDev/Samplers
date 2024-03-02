@@ -326,12 +326,12 @@ class GPT(nn.Module):
                 if top_p is not None:
                     torch.sort(logits, descending=True, stable=False, out=None)
                     sum = 0
+                    sel=1
                     for i in range(len(logits)):
                         if sum < top_p:
                             sum+=logits[i]
-                            sel = i+1
+                            sel +=1
                         else:
-                            sel = i+1
                             break
                 print(sel)    
                 v, _ = torch.topk(logits, min(sel, logits.size(-1)))     
