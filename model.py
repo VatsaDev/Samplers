@@ -332,7 +332,7 @@ class GPT(nn.Module):
                         else:
                             sel = i+1
                             break
-                    
+                print(sel)    
                 v, _ = torch.topk(logits, min(sel, logits.size(-1)))     
                 logits[logits < v[:, [-1]]] = -float('Inf')
                         
