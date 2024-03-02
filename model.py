@@ -325,7 +325,7 @@ class GPT(nn.Module):
             if mode=="top_p":
                 if top_p is not None:
                     pass # add top_p here
-            if mode=="top_k"
+            if mode=="top_k":
                 if top_k is not None: # cropping to top l
                     v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
                     print("v",v)
