@@ -324,11 +324,22 @@ class GPT(nn.Module):
 
             if mode=="top_p":
                 if top_p is not None:
-                    pass # add top_p here
+                    torch.sort(logits, dim=-1, descending=True, stable=False, *, out=None)
+                    sum = 0
+                    for i in range(len(logits)):
+                        if top_p <= sum:
+                            sum+=logits[i]
+                        else:
+                            sel = i+1
+                            break
+                    
+                v, _ = torch.topk(logits, min(sel, logits.size(-1)))     
+                logits[logits < v[:, [-1]]] = -float('Inf')
+                        
             if mode=="top_k":
                 if top_k is not None: # cropping to top l
                     v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
-                    print("v",v)
+                    #print("v",v)
                     logits[logits < v[:, [-1]]] = -float('Inf')
             
             probs = F.softmax(logits, dim=-1)  # apply softmax to convert logits to (normalized) probabilities
