@@ -329,6 +329,7 @@ class GPT(nn.Module):
                     for i in range(len(logits)):
                         if sum < top_p:
                             sum+=logits[i]
+                            sel = i+1
                         else:
                             sel = i+1
                             break
